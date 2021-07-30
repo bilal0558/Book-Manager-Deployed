@@ -1,0 +1,57 @@
+<%- include("components/frame.ejs") %>
+
+<div class="form-heading">
+    Update Book
+</div>
+<form action="/update-id" method="POST" class="update-form">
+    <div>
+        Enter ID:<input name="updateID" type="text" id="update-search-value">
+        <input type="submit" value="Search" id="update-search-button">
+        <span class="status-message fail"><%= idFail %></span>
+        <div class="form-sub-heading">
+            Update
+        </div>
+    </div>
+</form>
+<form action="/update" method="POST" class="update-form-in">
+    <div class="fields update-form-in">
+        <div class="fields-column">
+            <input style="display: none;" type="text" name="_id" value="<%- data[0]._id %>" >
+            Title: <p class="add-form-item"><input type="text" name="title" value="<%- data[0].title %>" required ></p> 
+            Author:<p class="add-form-item"> <input type="text" name="author" value=" <%- data[0].author %>" required> </p>
+            Bio<p class="add-form-item"><textarea name="bio" id="Message" cols="30" rows="10"><%- data[0].bio %></textarea></p>
+        </div>
+    <div class="fields-column">
+        Category:<p class="add-form-item">
+            <select name="genre" id="genre" required value="data[0].genre">
+                <option value="One_Category">One_Category</option>
+                <option value="One_Category">One_Category</option>
+                <option value="One_Category">One_Category</option>
+                <option value="One_Category">One_Category</option>
+            </select>
+        </p>
+        Location:<p class="add-form-item"> <input type="text" name="location" value="<%- data[0].location %>" required> </p>
+        Rating:<p class="add-form-item">
+            <select name="rating" id="rating" value="data[0].rating" required >
+                <option value="Not Given">Select Rating</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </p>
+    </div>
+    <span>
+        Enter Password:<p class="add-form-item"></p> <input type="text" name="password" value="" required >
+        <input type="submit" value="Update">
+        <p>
+            <span class="status-message success"><%= success %></span>
+            <span class="status-message fail"><%= fail %></span>
+        </p>
+       
+    </span>
+    
+</form>
+
+<%- include("components/end.ejs") %>

@@ -1,0 +1,42 @@
+<%- include("components/frame.ejs") %>
+
+<div class="form-heading">
+    Add Book
+</div>
+<form action="/add" method="POST" class="add-form">
+    <div class="fields">
+        <div class="fields-column">
+            Title: <p class="add-form-item"><input name="title" type="text" required></p> 
+            Author:<p class="add-form-item"> <input name="author" type="text" required> </p>
+            Bio<p class="add-form-item"><textarea name="bio" id="Message" cols="30" rows="10" placeholder=""></textarea></p>
+        </div>
+        <div class="fields-column">
+            Genre:<p class="add-form-item">
+                <select name="genre" id="genre" required>
+                    <option value="One_Category">One_Category</option>
+                    <option value="One_Category">One_Category</option>
+                    <option value="One_Category">One_Category</option>
+                    <option value="One_Category">One_Category</option>
+                </select>
+            </p>
+            Location:<p class="add-form-item"> <input name="location" type="text" required> </p>
+            Rating:<p class="add-form-item">
+                <select name="rating" id="rating" required>
+                    <option value="Not Given">Select Rating</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </p>
+        </div>
+    </div>
+    <span>
+        <input type="submit" value="Add">
+    </span>
+    <span class="status-message success"><%= message %></span>
+</form>
+</div>
+
+<%- include("components/end.ejs") %>

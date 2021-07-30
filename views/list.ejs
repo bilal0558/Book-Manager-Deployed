@@ -1,0 +1,41 @@
+<%- include("components/frame.ejs") %>
+
+<!--These divs are used for displaying All the details of the records.-->
+<!--Will be hidden by default, only be visible when clicked on any row item.-->
+<div id="overlay" class="overlay-full-screen hidden" onclick="closeInfo()"></div>
+<div id="info" class="info hidden">
+    <span id="book-title" class="book-title">Book Title Dummy Text</span>
+    <span class="book-detail">Author : <span class=detail-value id="author"> Author Name </span></span>
+    <span class="book-detail">Genre : <span class=detail-value id="genre">  One Word </span></span>
+    <span class="book-detail">Location : <span class=detail-value id="location"> 1L </span></span>
+    <span class="book-detail">Bio : <p class=detail-value id="bio"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente, harum mollitia minima nulla repellendus provident quam? Iste commodi eligendi soluta recusandae, nihil corporis mollitia consequuntur natus eaque illo voluptates numquam placeat aperiam sapiente odio expedita autem cumque ducimus unde amet neque omnis. Et, soluta sequi molestias amet tempore neque pariatur eos eaque mollitia sint iusto commodi sit voluptas sed architecto earum? Hic aliquam ad nostrum possimus et explicabo doloribus, culpa corporis tempore libero beatae id veniam soluta eius quibusdam laudantium velit error reiciendis fuga laborum natus facilis neque! Consequuntur corporis soluta, ipsam eveniet ratione  </p></span>
+    <span class="book-detail">Rating : <span class=detail-value id="rating"> 3/5 </span></span>
+    <button onclick="closeInfo()" id="close-info">X</button>
+</div>
+
+
+<div class="form-heading">
+    List of Books
+</div>
+<div class="table">
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Location</th>
+        </tr>
+        <% data.forEach((element) => { %>
+            <tr id="<%= element._id %>" class="book-rows">
+                <td><%= element._id %></td>
+                <td><%= element.title %></td>
+                <td><%= element.author %></td>
+                <td><%= element.location %></td>
+                <td style="display: none;"><%= element.bio %></td>
+                <td style="display: none;"><%= element.rating %></td>
+            </tr>
+        <% }); %>
+    </table>
+</div>
+
+<%- include("components/end.ejs") %>
