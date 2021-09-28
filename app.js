@@ -1,5 +1,8 @@
-//app.js file of the Library-Manager.
+//Book Manager v1.0.0
 
+
+//Code
+//app.js file of the Library-Manager.
 
 //Importing all the dependencies.
 //bodyParser not used, will remove.
@@ -52,7 +55,8 @@ var blankResult = [{
     bio : " ",
     genre : " ",
     location : " ",
-    rating : " "
+    rating : " ",
+    price : " "
 }];
 
 
@@ -61,8 +65,32 @@ app.get("/",(req,res)=>{
     res.set({
         "Allow-access-Allow-Origin": '*'
     });
-    return res.render('index',{
-        error:" "
+    //.toArray() is added to the find function to convert the resulting mongoose documents into an Array.
+    //Without this the find was returning null or undefined values.
+    //There are examples in which even without the .toArray() the function has worked, but this code was not working without it.
+    //.sort({field_name: 1/-1}) is added after the find method to sort the results.
+    db.collection("books").find({}).sort({title : 1}).toArray( (err, result)=>{
+        //Simple error checking.
+        if (err){
+            throw err;
+        }
+        
+        //If there is no result matching the search criteria the result is replaced with the blankResult.
+        if(result.length==0){
+            result=blankResult;
+        }
+
+        let totalBooks = result.length;
+        let totalPrice = result.reduce(function(totalPriceAccum, currentBook){
+            return totalPriceAccum + parseInt(currentBook.price);
+        },0);
+
+        //Rendering the search.ejs page along with the result passed as the data.
+        res.render('list',{
+            data : result,
+            totalBooks : totalBooks,
+            totalPrice : totalPrice
+        });
     });
 }).listen(3000);
 console.log("Listening on PORT 3000");
@@ -70,7 +98,6 @@ console.log("Listening on PORT 3000");
 
 //All the Routers handling the GET requests for all the pages, GET and POST request both exists for all the pages except the list page.
 //GET request of the /list page is listed below because it only had the GET request and no POST request.
-
 
 app.get("/add",(req,res)=>{
     return res.render('add',{
@@ -100,22 +127,6 @@ app.get("/update",(req,res)=>{
 });
 
 
-//Router handle for "/login" requests.
-app.post("/login",(req,res)=>{
-    var user = req.body.username;
-    var pass = req.body.password;
-
-    if(user==userName && pass==userPassword){
-        return res.redirect('/list');
-    }
-    else{
-        res.render('index',{
-            error:"Incorrect Username or Password."
-        });
-    }
-});
-
-
 //Router handle for "/add" requests.
 app.post("/add",(req,res)=>{
     
@@ -126,6 +137,7 @@ app.post("/add",(req,res)=>{
     var genre = req.body.genre;
     var location = req.body.location;
     var rating = req.body.rating;
+    var price = req.body.price;
 
     //Making the first letter of the title capital to maintain ordering in mongoDB.
     title = makeFirstLetterCapital(title);
@@ -142,7 +154,8 @@ app.post("/add",(req,res)=>{
             bio : bio,
             genre : genre,
             location : location,
-            rating : rating
+            rating : rating,
+            price : price
         }
 
         //Executing insertOne function
@@ -162,8 +175,6 @@ app.post("/add",(req,res)=>{
 
 //Router handle for "/list" requests.
 app.get("/list",(req,res)=>{
-    //This object will be used if no results are found, it has blank values and hence can be safely passed to the .ejs file.
-    //Used this to overcome the "variable not defined" error in the .ejs file.
     
     //.toArray() is added to the find function to convert the resulting mongoose documents into an Array.
     //Without this the find was returning null or undefined values.
@@ -175,14 +186,23 @@ app.get("/list",(req,res)=>{
             throw err;
         }
         
+        //Setting the value of total books using the result array.
+        let totalBooks = result.length;
+
         //If there is no result matching the search criteria the result is replaced with the blankResult.
         if(result.length==0){
             result=blankResult;
         }
 
+        let totalPrice = result.reduce(function(totalPriceAccum, currentBook){
+            return totalPriceAccum + parseInt(currentBook.price);
+        },0);
+
         //Rendering the search.ejs page along with the result passed as the data.
         res.render('list',{
-            data : result
+            data : result,
+            totalBooks : totalBooks,
+            totalPrice : totalPrice
         });
     });
 });
@@ -193,8 +213,13 @@ app.post("/search",(req,res)=>{
     var searchField = req.body.searchField;
     var searchValue = req.body.searchValue;
 
+    //Enhancing search by using regex so that partial search could be done and case sensitivity is also ignored.
+    var regexPreparedSearchValue = new RegExp(searchValue,'i');
+
     //[] are used to make searchField act as a variable and not as an absolute string.
-    var searchQuery = { [searchField] : `${searchValue}` };
+    var searchQuery = { [searchField] : regexPreparedSearchValue };
+
+    console.log(searchQuery);
 
     //.toArray() is added to the find function to convert the resulting mongoose documents into an Array.
     //Without this the find was resturning null or undefined values.
@@ -226,8 +251,6 @@ app.post("/update-id",(req,res)=>{
 
     //Preparing search query for update.
     var searchQuery = { _id : id };
-
-    console.log(searchQuery);
     //Running the findOne() method to get the document having the inputed ID.
     db.collection("books").find(searchQuery).toArray((err, result) => {
         //Simple error checking.
@@ -269,6 +292,7 @@ app.post("/update",(req,res)=>{
     var genre = req.body.genre;
     var location = req.body.location;
     var rating = req.body.rating;
+    var price = req.body.price;
     var password = req.body.password;
 
     if(password==userPassword){
@@ -280,7 +304,8 @@ app.post("/update",(req,res)=>{
                 bio : bio,
                 genre : genre,
                 location : location,
-                rating : rating
+                rating : rating,
+                price : price
             }
         }
 
@@ -347,7 +372,7 @@ app.post("/delete",(req,res)=>{
             if (err) {
                 throw err;
             }
-            console.log(obj.result.n + " document(s) deleted");
+            //console.log(obj.result.n + " document(s) deleted");
             return res.render('delete',{
                 success : "Deletion Succesfull !",
                 fail : " "
