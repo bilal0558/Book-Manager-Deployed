@@ -32,12 +32,13 @@
                 <option value="3">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
+                <option value="5">6</option>
             </select>
         </p>
         Price:<p class="add-form-item"> <input name="price" type="text" value="<%- data[0].price %>" required> </p>
     </div>
     <span>
-        Enter Password:<p class="add-form-item"></p> <input type="text" name="password" value="" required >
+        Enter Password:<p class="add-form-item"></p> <input type="password" name="password" value="" required >
         <input type="submit" value="Update">
         <p>
             <span class="status-message success"><%= success %></span>

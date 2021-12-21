@@ -146,6 +146,7 @@ button:focus{
 }
 
 input[type="text"],
+input[type="password"],
 select,
 textarea {
     width: 80%;
